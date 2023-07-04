@@ -1,16 +1,30 @@
 'use client';
+import axios from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
+import toast from 'react-hot-toast';
 
 const SignUpPage = () => {
+	const router = useRouter();
 	const [user, setUser] = useState({
 		username: '',
 		email: '',
 		password: '',
 	});
+	const [loading, setLoading] = useState(false);
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		console.log('first');
+		try {
+			e.preventDefault();
+			console.log('first');
+			setLoading(true);
+			const { data: apiResponse } = await axios.post('/api/users/signup', user);
+			router.push('/login');
+		} catch (error: any) {
+			toast.error(error.message);
+		} finally {
+			setLoading(false);
+		}
 	};
 	return (
 		<section>
@@ -99,9 +113,10 @@ const SignUpPage = () => {
 							<div>
 								<button
 									type="submit"
-									className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+									className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80 disabled:bg-gray-400"
+									disabled={loading}
 								>
-									Create Account
+									{loading ? 'Processing ...' : 'Create Account'}
 								</button>
 							</div>
 						</div>
