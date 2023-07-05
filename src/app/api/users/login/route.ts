@@ -36,6 +36,9 @@ export async function POST(request: NextRequest) {
 		const response = NextResponse.json(
 			{
 				status: 'success',
+				data: {
+					id: user._id,
+				},
 			},
 			{ status: 200 }
 		);

@@ -18,7 +18,7 @@ const LoginPage = () => {
 			console.log('first');
 			setLoading(true);
 			const { data: apiResponse } = await axios.post('/api/users/login', user);
-			router.push('/profile');
+			router.push(`/profile/${apiResponse.data.id}`);
 		} catch (error: any) {
 			toast.error(error.message);
 		} finally {

@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { ROUTE_PATH } from './types/route';
 
 export function middleware(request: NextRequest) {
@@ -10,24 +10,19 @@ export function middleware(request: NextRequest) {
 	const token = request.cookies.get('token')?.value;
 	if (token) {
 		if (authPaths.includes(currentPathName)) {
-			return NextResponse.redirect(
-				new URL(ROUTE_PATH.Home, request.nextUrl)
-			);
+			return NextResponse.redirect(new URL(ROUTE_PATH.Home, request.nextUrl));
 		}
 	} else {
-		if (protectedPaths.includes(currentPathName)) {
-			return NextResponse.redirect(
-				new URL(ROUTE_PATH.Login, request.nextUrl)
-			);
+		if (
+			protectedPaths.includes(currentPathName) ||
+			currentPathName.startsWith('/profile')
+		) {
+			return NextResponse.redirect(new URL(ROUTE_PATH.Login, request.nextUrl));
 		}
 	}
 }
 
 // See "Matching Paths" below to learn more
 export const config = {
-	matcher: [
-		ROUTE_PATH.Login,
-		ROUTE_PATH.Signup,
-		`${ROUTE_PATH.Profile}/:(*)`,
-	],
+	matcher: ['/login', '/signup', '/profile/:path*'],
 };
